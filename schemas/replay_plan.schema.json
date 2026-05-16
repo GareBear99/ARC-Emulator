@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "checkpoint_policy": {
+      "type": "object"
+    },
+    "input_timeline": {
+      "type": "array"
+    },
+    "schema": {
+      "const": "arc.emulator.replay_plan.v1"
+    },
+    "session_id": {
+      "type": "string"
+    },
+    "system": {
+      "enum": [
+        "n64",
+        "gamecube",
+        "ps2",
+        "psp"
+      ]
+    }
+  },
+  "required": [
+    "schema",
+    "session_id",
+    "system",
+    "checkpoint_policy"
+  ],
+  "title": "ARC Emulator Replay Plan",
+  "type": "object"
+}

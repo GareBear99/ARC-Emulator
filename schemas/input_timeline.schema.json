@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "events": {
+      "items": {
+        "properties": {
+          "control": {
+            "type": "string"
+          },
+          "device": {
+            "type": "string"
+          },
+          "frame": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "value": {}
+        },
+        "required": [
+          "frame",
+          "device",
+          "control",
+          "value"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "schema": {
+      "const": "arc.emulator.input_timeline.v1"
+    },
+    "session_id": {
+      "type": "string"
+    },
+    "system": {
+      "enum": [
+        "n64",
+        "gamecube",
+        "ps2",
+        "psp"
+      ]
+    }
+  },
+  "required": [
+    "schema",
+    "session_id",
+    "system",
+    "events"
+  ],
+  "title": "ARC Emulator Input Timeline",
+  "type": "object"
+}

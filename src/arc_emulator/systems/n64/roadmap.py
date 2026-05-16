@@ -1,0 +1,1 @@
+N64_ROADMAP={'phase':'first target','modules':['ROM header and byte-order normalization','VR4300/MIPS interpreter scaffold','RDRAM/cart/PI/SI/VI/AI/MI memory map','controller input and controller pak scaffold','save type detection','RSP boundary','RDP boundary','homebrew/test-ROM execution target','deterministic replay checkpoints']}

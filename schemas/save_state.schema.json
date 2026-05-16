@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "emulator_core_version": {
+      "type": "string"
+    },
+    "session_id": {
+      "type": "string"
+    },
+    "state_manifest_sha256": {
+      "type": "string"
+    },
+    "state_payload_sha256": {
+      "type": "string"
+    },
+    "system": {
+      "enum": [
+        "n64",
+        "gamecube",
+        "ps2",
+        "psp"
+      ]
+    }
+  },
+  "required": [
+    "session_id",
+    "system",
+    "state_manifest_sha256",
+    "state_payload_sha256"
+  ],
+  "title": "ARC Emulator Save State",
+  "type": "object"
+}

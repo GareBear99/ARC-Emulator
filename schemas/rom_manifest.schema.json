@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "chunk_hashes": {
+      "type": "array"
+    },
+    "kind": {
+      "enum": [
+        "rom_or_disc",
+        "save_state",
+        "generic"
+      ]
+    },
+    "manifest_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "type": "string"
+    },
+    "merkle_root": {
+      "pattern": "^[a-f0-9]{64}$",
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "payload_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "arc.emulator.binary_manifest.v1"
+    }
+  },
+  "required": [
+    "schema",
+    "kind",
+    "payload_sha256",
+    "manifest_sha256",
+    "merkle_root",
+    "chunk_hashes"
+  ],
+  "title": "ARC Emulator ROM/Disc Manifest",
+  "type": "object"
+}

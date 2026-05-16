@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "arc-emulator"
+version = "0.1.1"
+description = "Binary-first cryptographic emulator framework for deterministic replay, preservation, and ARC-native game memory."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "ARC-Emulator Contributors"}]
+keywords = ["emulator", "n64", "gamecube", "ps2", "psp", "preservation", "deterministic-replay", "cryptographic-receipts", "binary-storage", "arc"]
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "jsonschema>=4.0"]
+
+[project.scripts]
+arc-emulator = "arc_emulator.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
