@@ -2,7 +2,7 @@ from __future__ import annotations
 import argparse, json
 from pathlib import Path
 from arc_emulator import __version__
-from arc_emulator.arc.binary_store import BinaryStore
+from arc_emulator.arc.binary_store import BinaryStore, store_root_for_manifest
 from arc_emulator.arc.receipts import rom_pack_receipt, session_receipt
 from arc_emulator.core.media_identifier import identify_media
 from arc_emulator.core.session import create_session
@@ -18,14 +18,24 @@ def cmd_identify(args):
     print_json(info)
 def cmd_pack(args):
     store=BinaryStore(args.store); info=identify_media(args.path); system=args.system or (info['system_candidates'][0] if info['system_candidates'] else 'unknown')
-    manifest=store.pack_file(args.path, kind='rom_or_disc', metadata={'system':system,'identity':info})
+    manifest=store.pack_file(args.path, content_class='rom_or_disc', codec='raw', extra={'system':system,'identity':info})
     receipt=store.write_receipt(rom_pack_receipt(system, manifest)); print_json({'manifest':manifest,'receipt':receipt})
 def cmd_create_session(args):
     store=BinaryStore(args.store); session=create_session(store.root,args.system,args.title or '')
     receipt=store.write_receipt(session_receipt(session['session_id'],args.system,args.title or '')); print_json({'session':session,'receipt':receipt})
 def cmd_save_state(args):
     store=BinaryStore(args.store); print_json(create_save_state(store,args.session,args.system,args.state_file))
-def cmd_verify_state(args): print_json(verify_save_state(args.manifest))
+def cmd_verify_state(args): print_json(verify_save_state(args.manifest, args.store))
+def cmd_restore(args):
+    if not Path(args.manifest).exists():
+        print_json({'ok': False, 'error': f'manifest not found: {args.manifest}'})
+        return
+    root = store_root_for_manifest(args.manifest, args.store)
+    if root is None:
+        print_json({'ok': False, 'error': 'could not locate the binary store for this manifest (pass --store)'})
+        return
+    store = BinaryStore(root)
+    print_json(store.restore_file(args.manifest, args.output))
 def cmd_replay_plan(args): print_json(replay_plan(args.session,args.system))
 def cmd_smoke(args): print_json({'ok':True,'version':__version__,'systems_order':['n64','gamecube','ps2','psp'],'message':'arc-emulator smoke passed'})
 def build_parser():
@@ -35,7 +45,8 @@ def build_parser():
     pack=sub.add_parser('pack'); pack.add_argument('path'); pack.add_argument('--store',default='.arc_emulator_store'); pack.add_argument('--system',choices=['n64','gamecube','ps2','psp','unknown'],default=None); pack.set_defaults(func=cmd_pack)
     cs=sub.add_parser('create-session'); cs.add_argument('--store',default='.arc_emulator_store'); cs.add_argument('--system',required=True,choices=['n64','gamecube','ps2','psp']); cs.add_argument('--title',default=''); cs.set_defaults(func=cmd_create_session)
     ss=sub.add_parser('save-state'); ss.add_argument('--store',default='.arc_emulator_store'); ss.add_argument('--session',required=True); ss.add_argument('--system',required=True,choices=['n64','gamecube','ps2','psp']); ss.add_argument('--state-file',required=True); ss.set_defaults(func=cmd_save_state)
-    vs=sub.add_parser('verify-state'); vs.add_argument('manifest'); vs.set_defaults(func=cmd_verify_state)
+    vs=sub.add_parser('verify-state'); vs.add_argument('manifest'); vs.add_argument('--store',default=None); vs.set_defaults(func=cmd_verify_state)
+    rs=sub.add_parser('restore'); rs.add_argument('manifest'); rs.add_argument('output'); rs.add_argument('--store',default=None); rs.set_defaults(func=cmd_restore)
     rp=sub.add_parser('replay-plan'); rp.add_argument('--session',required=True); rp.add_argument('--system',required=True,choices=['n64','gamecube','ps2','psp']); rp.set_defaults(func=cmd_replay_plan)
     sm=sub.add_parser('smoke'); sm.set_defaults(func=cmd_smoke)
     return p
