@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ARC-Emulator runtime stores
+.arc_emulator_store/
+
+# macOS / editors
+.DS_Store
+.idea/
+.vscode/
